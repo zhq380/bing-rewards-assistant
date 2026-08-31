@@ -1,4 +1,4 @@
-package com.ripple.script
+﻿package com.ripple.script
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         // 延迟请求电池优化白名单：确保 UI 先渲染完成，
-        // 避免 ColorOS 在系统设置页面弹出时将后台 Activity 杀掉
+        // 避免定制 ROM 在系统设置页面弹出时将后台 Activity 杀掉
         if (savedInstanceState == null && !isFirstLaunch) {
             isFirstLaunch = true
             window.decorView.postDelayed({ requestIgnoreBatteryIfNeeded() }, 800L)
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // 每次回到前台都检查：ColorOS 可能在后台杀掉无障碍，
+        // 每次回到前台都检查：定制 ROM 可能在后台杀掉无障碍，
         // 用户点开应用的瞬间是恢复的最佳时机（有 WRITE_SECURE_SETTINGS 则直接写回）
         ensureAccessibilityOn()
     }
