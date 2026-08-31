@@ -1,4 +1,4 @@
-package com.ripple.script.service
+﻿package com.ripple.script.service
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -80,7 +80,7 @@ object AccessibilityGuard {
 
 /**
  * 无障碍看门狗：AlarmManager 系统级闹钟自检（进程死后的复活兜底）。
- * - ACTION_TIME_TICK 每分钟心跳只在进程存活期间有效；进程被 ColorOS 彻底回收后，
+ * - ACTION_TIME_TICK 每分钟心跳只在进程存活期间有效；进程被系统彻底回收后，
  *   动态 receiver 随之失效，仍靠本闹钟把应用拉起再恢复无障碍
  * - 间隔已从 15 分钟加快到 3 分钟（存活期检测交给分钟级心跳，本闹钟专注复活死进程）
  * - 注：用户「强制停止」会取消所有闹钟，此场景只能靠开机/下次手动启动恢复
