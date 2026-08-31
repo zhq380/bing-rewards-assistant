@@ -9,6 +9,10 @@ captures/
 .externalNativeBuild/
 .cxx/
 
+# ===== 安装包 & 示例软件 =====
+*.apk
+示例软件/
+
 # ===== 本地工具链（本地 Gradle 发行版，不纳入版本库） =====
 tools/
 
