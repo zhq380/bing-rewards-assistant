@@ -1,4 +1,4 @@
-package com.ripple.script.rewards
+﻿package com.ripple.script.rewards
 
 import android.content.Context
 import android.os.PowerManager
@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
  * 一键签到的运行驱动：编排 无障碍服务 → BingUi → RewardsAgent → 数据落盘 的完整流程。
  *
  * 关键点：
- * - 每次运行前轮询等待 [AutoAccessibilityService.instance]，应对 ColorOS 杀服务后的自愈窗口
+ * - 每次运行前轮询等待 [AutoAccessibilityService.instance]，应对 定制 ROM 杀服务后的自愈窗口
  *   （每秒 poll 一次，最多 10 次；超时抛异常交由上层提示）。
  * - 全程持有 SCREEN_DIM_WAKE_LOCK 保持亮屏，finally 中释放。
  * - [RewardsResult] 成功后写入 [RewardsStore] 历史，便于签到页回溯。
