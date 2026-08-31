@@ -41,7 +41,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -109,6 +111,20 @@ fun AppRoot() {
     // 共享阶段日志：首页运行产生 → 日志页实时展示
     val phaseLog = remember { PhaseLog() }
 
+    // 读取屏幕配置：用户填了像素 → 动态换算成 dp；没填 → 默认 600dp 响应式
+    val config = LocalConfiguration.current
+    val density = LocalDensity.current
+    val params = remember { store.loadParams() }
+    val maxWidthDp = remember(params.screen, config.screenWidthDp) {
+        val sc = params.screen
+        if (sc.enabled && sc.maxWidthPx > 0) {
+            // 用户填的像素值 → 换算 dp
+            with(density) { sc.maxWidthPx.toDp() }
+        } else {
+            600.dp
+        }
+    }
+
     // 语义化返回标题：按 source（从哪里来 → 回到哪里）
     val backTitle: String = when (currentRoute) {
         Routes.SCRIPT -> {
@@ -157,7 +173,6 @@ fun AppRoot() {
             })
         }
     ) { padding ->
-        // 大屏自适应：内容区限宽 600dp 居中，手机上全宽，平板/横屏不拉伸
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
@@ -167,7 +182,7 @@ fun AppRoot() {
                 startDestination = Routes.HOME,
                 modifier = Modifier
                     .fillMaxSize()
-                    .widthIn(max = 600.dp)
+                    .widthIn(max = maxWidthDp)
                     .padding(padding),
             // 横滑过渡：二级页从右侧滑入回到右侧滑出，根 tab 淡入淡出
             enterTransition = {
