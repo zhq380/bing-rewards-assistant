@@ -1,4 +1,4 @@
-package com.ripple.script.util
+﻿package com.ripple.script.util
 
 import android.content.ComponentName
 import android.content.Context
@@ -48,7 +48,7 @@ object Permissions {
     /**
      * 强制重绑无障碍服务（需 WRITE_SECURE_SETTINGS，阻塞约 0.6s，请在后台线程调用）。
      *
-     * 应对 ColorOS 的「假活」状态：设置项仍显示开启，但服务实例已被系统杀死。
+     * 应对 定制 ROM 的「假活」状态：设置项仍显示开启，但服务实例已被系统杀死。
      * 处理方式：先把本服务从列表移除 → 短暂等待系统完成解绑清理 → 再写回，
      * 强制系统走一次完整的 unbind → bind 流程，服务得以重建。
      */
