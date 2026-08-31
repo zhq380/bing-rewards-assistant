@@ -1,4 +1,4 @@
-package com.ripple.script.util
+﻿package com.ripple.script.util
 
 import android.content.Context
 import android.content.pm.LauncherApps
@@ -10,7 +10,7 @@ import android.util.Log
 /**
  * 精确到用户空间的应用启动工具。
  *
- * ColorOS 的应用分身（com.oplus.multiapp）在目标包同时存在主空间与分身实例时，
+ * 部分 ROM 的应用分身功能（com.oplus.multiapp）在目标包同时存在主空间与分身实例时，
  * 普通 `getLaunchIntentForPackage + startActivity` 会弹出「主空间 / 分身」选择框。
  * 只要脚本绑定了目标应用（无论主空间 serial=0 还是分身 serial>0），都应调用本工具，
  * 用 [LauncherApps.startMainActivity] 直接指定 UserHandle，彻底避开选择器。
@@ -69,7 +69,7 @@ object AppLauncher {
     }
 
     /**
-     * ColorOS 应用分身（com.oplus.multiapp，固定 user 999）不在 userProfiles 内，
+     * 应用分身功能（com.oplus.multiapp，固定 user 999）不在 userProfiles 内，
      * 直接构造 [UserHandle.of]（隐藏 API，走反射）尝试启动。serial 与 userId 在该场景下一致。
      */
     private fun launchByDirectHandle(
