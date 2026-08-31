@@ -1,4 +1,4 @@
-package com.ripple.script.rewards
+﻿package com.ripple.script.rewards
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -74,7 +74,7 @@ interface BingUi {
     /** 点击确认弹窗（奖励/通知提示家常） */
     fun dismissDialogs()
     /**
-     * 处理 ColorOS 应用分身选择器（MultiAppResolverActivity）：点目标实例（主空间/分身）。
+     * 处理 应用分身功能选择器（MultiAppResolverActivity）：点目标实例（主空间/分身）。
      * 阅读/唤起链接时隐式 Intent 会弹选择器，必须在脚本内自动选定，否则永远停在选择器上。
      */
     suspend fun resolveChooser(): Boolean
@@ -456,7 +456,7 @@ class AccessibilityBingUi(
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             runCatching { svc.startActivity(intent) }.getOrNull() ?: return false
         }
-        // 等待前台切到 Bing；中途若弹出 ColorOS 分身选择器则自动选目标实例（限次防卡死）
+        // 等待前台切到 Bing；中途若弹出 分身应用选择器则自动选目标实例（限次防卡死）
         var chooserSeen = 0
         var lastFp = ""
         val deadline = System.currentTimeMillis() + 8000
@@ -514,7 +514,7 @@ class AccessibilityBingUi(
         }
         if (root == null) {
             android.util.Log.i("RippleReward", "resolveChooser: 找不到选择器 root，坐标兜底")
-            // ColorOS 分身选择器布局稳定：主空间项在左侧、分身项在右侧（底部弹窗中部）。
+            // 分身应用选择器布局稳定：主空间项在左侧、分身项在右侧（底部弹窗中部）。
             // 无障碍窗口 API 偶发返回空（windows=0）时按布局百分比点选，可显著提高成功率。
             val dm = svc.resources.displayMetrics
             val x = if (BingInstanceResolver.isDual(targetSerial)) (dm.widthPixels * 0.70f).toInt()
