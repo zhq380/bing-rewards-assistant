@@ -1,4 +1,4 @@
-package com.ripple.script.ui.screens
+﻿package com.ripple.script.ui.screens
 
 import android.app.NotificationManager
 import android.content.Context
@@ -82,6 +82,7 @@ import androidx.compose.ui.unit.sp
 import com.ripple.script.data.RewardParams
 import com.ripple.script.data.RewardsStore
 import com.ripple.script.ui.theme.BadgeBlue
+import com.ripple.script.ui.theme.BadgeCyan
 import com.ripple.script.ui.theme.BadgeGreen
 import com.ripple.script.ui.theme.BadgeOrange
 import com.ripple.script.ui.theme.BadgePurple
@@ -105,7 +106,7 @@ import java.util.Locale
  *   3. 定时任务（每日自动启动时刻 + 周末跳过 + 两次间隔）
  *   4. 全局性能（亮屏时长、流体云通知、自动展示悬浮窗）
  *   5. 诊断与清理（清空历史 / 清空断点 / 复制日志摘要）
- *   6. 关于 · ColorOS 设计版本
+ *   6. 关于 · 设计版本
  */
 @Composable
 fun RewardsSettingsScreen(store: RewardsStore) {
@@ -127,6 +128,12 @@ fun RewardsSettingsScreen(store: RewardsStore) {
     var fluidCloudEnabled by remember { mutableStateOf(true) }
     var floatingEnabled by remember { mutableStateOf(false) }
 
+    // 屏幕自适应配置
+    var screenEnabled by remember { mutableStateOf(initial.screen.enabled) }
+    var maxWidthPxText by remember { mutableStateOf(initial.screen.maxWidthPx.toString().let { if (it == "0") "" else it }) }
+    var screenWidthRefText by remember { mutableStateOf(initial.screen.screenWidthPx.toString().let { if (it == "0") "" else it }) }
+    var screenHeightRefText by remember { mutableStateOf(initial.screen.screenHeightPx.toString().let { if (it == "0") "" else it }) }
+
     // 定时任务（展示用；真实调度由 BootReceiver + AlarmManager 实现，此处先持久化 UI 配置）
     var scheduledEnabled by remember { mutableStateOf(false) }
     var scheduleHour by remember { mutableStateOf(0) }
@@ -136,15 +143,21 @@ fun RewardsSettingsScreen(store: RewardsStore) {
 
     val permOkCount = listOf(accessibilityOn, overlayOk, batteryOk, notiOk).count { it }
 
-    // 分组折叠状态：自愈 / 定时 / 性能 / 诊断（默认全折叠）
-    val groupExpanded = remember { mutableStateListOf(false, false, false, false) }
+    // 分组折叠状态：自愈 / 定时 / 屏幕 / 性能 / 诊断（默认全折叠）
+    val groupExpanded = remember { mutableStateListOf(false, false, false, false, false) }
 
     val saveGlobal: () -> Unit = {
-        val p = RewardParams(keepScreenMs = keepScreenMin.toLong() * 60_000L)
-        // 保留脚本参数，只覆写全局字段
         val cur = store.loadParams()
+        val sc = com.ripple.script.data.ScreenConfig(
+            enabled = screenEnabled,
+            maxWidthPx = maxWidthPxText.toIntOrNull()?.coerceIn(0, 4096) ?: 0,
+            screenWidthPx = screenWidthRefText.toIntOrNull()?.coerceIn(0, 8192) ?: 0,
+            screenHeightPx = screenHeightRefText.toIntOrNull()?.coerceIn(0, 8192) ?: 0
+        )
         store.saveParams(
-            p.copy(
+            RewardParams(
+                keepScreenMs = keepScreenMin.toLong() * 60_000L,
+                screen = sc,
                 main = cur.main,
                 clone = cur.clone
             )
@@ -372,6 +385,117 @@ fun RewardsSettingsScreen(store: RewardsStore) {
             }
         }
 
+        // —— 3. 屏幕自适应 ——
+        item {
+            SettingsGroupCard(
+                icon = Icons.Filled.Window,
+                title = "屏幕自适应 · 自定义像素",
+                subtitle = "默认 600dp 限宽 · 可填像素精准适配",
+                accent = BadgeCyan,
+                accentBrush = com.ripple.script.ui.theme.GradientHeroGreen,
+                expanded = groupExpanded[2],
+                onToggle = { groupExpanded[2] = !groupExpanded[2] }
+            ) {
+                // 开关
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            "启用自定义限宽",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            "开启后使用下方像素值，关闭走默认 600dp 响应式",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = screenEnabled,
+                        onCheckedChange = { screenEnabled = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = androidx.compose.ui.graphics.Color.White,
+                            checkedTrackColor = BadgeCyan
+                        )
+                    )
+                }
+                Spacer(Modifier.height(12.dp))
+
+                // 限宽像素
+                Text(
+                    "限宽像素 (px)",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = maxWidthPxText,
+                    onValueChange = { s ->
+                        maxWidthPxText = s.filter(Char::isDigit).take(5)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    placeholder = { Text("例如: 1080 (全宽) 或 720 (半宽)") },
+                    suffix = {
+                        Text(
+                            "px → 自动转 dp",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = BadgeCyan
+                        )
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                )
+                Spacer(Modifier.height(12.dp))
+
+                // 参考宽高（调试用）
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            "屏幕参考宽 (可选)",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        OutlinedTextField(
+                            value = screenWidthRefText,
+                            onValueChange = { s -> screenWidthRefText = s.filter(Char::isDigit).take(5) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("如 1080") },
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            "屏幕参考高 (可选)",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        OutlinedTextField(
+                            value = screenHeightRefText,
+                            onValueChange = { s -> screenHeightRefText = s.filter(Char::isDigit).take(5) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("如 2400") },
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "💡 提示：不同设备 density 不同，填像素后 App 会自动换算成 dp。不启用时走 600dp 通用响应式。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
         // —— 4. 全局性能 ——
         item {
             SettingsGroupCard(
@@ -380,8 +504,8 @@ fun RewardsSettingsScreen(store: RewardsStore) {
                 subtitle = "亮屏 · 流体云 · 悬浮窗",
                 accent = BadgeOrange,
                 accentBrush = GradientHeroOrange,
-                expanded = groupExpanded[2],
-                onToggle = { groupExpanded[2] = !groupExpanded[2] }
+                expanded = groupExpanded[3],
+                onToggle = { groupExpanded[3] = !groupExpanded[3] }
             ) {
                 Row(
                     Modifier.fillMaxWidth(),
@@ -448,8 +572,8 @@ fun RewardsSettingsScreen(store: RewardsStore) {
                 subtitle = "断点进度 · 历史记录 · 日志",
                 accent = BadgeGreen,
                 accentBrush = GradientHeroGreen,
-                expanded = groupExpanded[3],
-                onToggle = { groupExpanded[3] = !groupExpanded[3] }
+                expanded = groupExpanded[4],
+                onToggle = { groupExpanded[4] = !groupExpanded[4] }
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     PillButton(
