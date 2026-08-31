@@ -13,8 +13,8 @@ android {
         applicationId = "com.ripple.script"
         minSdk = 26
         targetSdk = 36
-        versionCode = 34
-        versionName = "1.10.11"
+        versionCode = 36
+        versionName = "1.11.0"
     }
 
     buildTypes {
