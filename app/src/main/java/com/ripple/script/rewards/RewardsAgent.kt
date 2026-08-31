@@ -1,4 +1,4 @@
-package com.ripple.script.rewards
+﻿package com.ripple.script.rewards
 
 import android.graphics.Rect
 import kotlinx.coroutines.delay
@@ -1299,7 +1299,7 @@ class RewardsAgent(
      * 消失）——若点击落在卡片 padding 空隙上（历史 bug），点完仍在积分页，这里会等待超时
      * 返回 false，外层重试滚动后再点，绝不误判"已进入阅读"。
      *
-     * 同时处理 ColorOS 分身选择器：主空间+分身必应并存时，点击会弹选择器，必须自动选目标实例。
+     * 同时处理 分身应用选择器：主空间+分身必应并存时，点击会弹选择器，必须自动选目标实例。
      */
     private suspend fun settleAfterEntryClick(): Boolean {
         val deadline = System.currentTimeMillis() + 6000
