@@ -14,6 +14,15 @@
 
 或访问 Releases 页面：https://github.com/zhq380/bing-rewards-assistant/releases
 
+## 🔀 版本对比
+
+本项目有两个版本，功能完全相同，仅 UI 设计风格不同：
+
+| 版本 | 仓库 | 特点 |
+|------|------|------|
+| 📱 **自适应版（本仓库）** | [bing-rewards-assistant](https://github.com/zhq380/bing-rewards-assistant) | 600dp 限宽居中，通用 Android，无品牌 |
+| 🎨 **ColorOS 光场版** | [RippleScript](https://github.com/zhq380/RippleScript) | 全宽原生体验，OPPO ColorOS 16 极光引擎 |
+
 ## ✨ 功能特性
 
 | 功能 | 说明 |
