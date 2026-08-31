@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">涟漪脚本</string>
+    <string name="accessibility_label">涟漪脚本自动化服务</string>
+    <string name="accessibility_description">用于执行自动化脚本的手势分发与操作录制：将脚本中的点击、滑动等步骤转换为系统手势；录制模式下捕获您的触摸操作以生成脚本。所有数据仅保存在本机，不联网。</string>
+</resources>

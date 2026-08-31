@@ -1,0 +1,47 @@
+# ===== Gradle / Android =====
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ===== 本地工具链（本地 Gradle 发行版，不纳入版本库） =====
+tools/
+
+# ===== Kotlin =====
+.kotlin/
+
+# ===== 临时调试输出（截图 / UI dump / 日志） =====
+*.log
+*.hprof
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# ===== ADB / UI 自动化调试文件 =====
+*.xml
+!app/src/main/res/xml/**
+!app/src/main/AndroidManifest.xml
+!app/src/main/res/**
+!*.gradle*
+!settings.gradle.kts
+
+# ===== AI 训练数据（端侧图像分类样本） =====
+train/
+qa_grids/
+
+# ===== 压缩包 & 临时文件 =====
+*.zip
+*.7z
+*.tar
+*.gz
+tmp*/
+
+# ===== 工作区元数据 =====
+.workbuddy/
+docs/
