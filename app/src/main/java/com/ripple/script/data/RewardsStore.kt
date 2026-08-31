@@ -1,4 +1,4 @@
-package com.ripple.script.data
+﻿package com.ripple.script.data
 
 import android.content.Context
 import kotlinx.serialization.Serializable
@@ -61,13 +61,25 @@ data class ScriptParams(
     fun dailySetCountSeconds(): Int = if (dailySetEnabled) 3 * dailySetSeconds else 0
 }
 
+@Serializable
+data class ScreenConfig(
+    /** 限宽像素（0 = 自动用 600dp；>0 = 用户自定义像素） */
+    val maxWidthPx: Int = 0,
+    /** 目标屏幕宽度（调试参考） */
+    val screenWidthPx: Int = 0,
+    /** 目标屏幕高度（调试参考） */
+    val screenHeightPx: Int = 0,
+    /** 是否启用自定义；false 时走默认 600dp 响应式 */
+    val enabled: Boolean = false
+)
+
 /** 全局参数 + 两套脚本参数（主空间 / 应用分身各自独立）。 */
 @Serializable
 data class RewardParams(
     val keepScreenMs: Long = 5 * 60_000L,
+    val screen: ScreenConfig = ScreenConfig(),
     val main: ScriptParams = ScriptParams(),
-    // 分身默认跳转到 ColorOS 应用分身（user 999）
-    val clone: ScriptParams = ScriptParams(autoLaunch = true, bingTargetSerial = 999L)
+    val clone: ScriptParams = ScriptParams()
 )
 
 @Serializable
