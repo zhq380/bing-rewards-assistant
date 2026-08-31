@@ -1,4 +1,4 @@
-package com.ripple.script.rewards
+﻿package com.ripple.script.rewards
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -17,7 +17,7 @@ import com.ripple.script.R
  * 一键会话的实时进度通知。
  *
  * - Android 16 (API 36) 及以上：用 Google「Live Updates」(Promoted Ongoing) + [Notification.ProgressStyle]，
- *   ColorOS 16 流体云会原生承接，以胶囊/卡片形态呈现在状态栏。
+ *   高版本系统的流体通知会原生承接，以胶囊/卡片形态呈现在状态栏。
  * - 低于 API 36：降级为普通 ongoing 通知（仍保持同 ID 更新进度）。
  *
  * 增强：
