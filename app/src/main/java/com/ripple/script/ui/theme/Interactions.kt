@@ -1,4 +1,4 @@
-package com.ripple.script.ui.theme
+﻿package com.ripple.script.ui.theme
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
@@ -40,7 +40,7 @@ fun Modifier.bounceClick(
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.96f else 1f,
         animationSpec = Motion.Springs.pressScale(),
-        label = "aurora-press-scale"
+        label = "press-scale"
     )
     this
         .graphicsLayer {
@@ -70,7 +70,7 @@ fun Modifier.bounceCombinedClick(
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.95f else 1f,
         animationSpec = Motion.Springs.cardPop(),
-        label = "aurora-combined-scale"
+        label = "combined-scale"
     )
     this
         .graphicsLayer {
@@ -93,14 +93,14 @@ fun Modifier.bounceCombinedClick(
  * 用于 Hero 卡、环形进度等装饰性元素
  */
 @Composable
-fun Modifier.auroraBreathing(enabled: Boolean = true): Modifier = composed {
+fun Modifier.breathing(enabled: Boolean = true): Modifier = composed {
     if (!enabled) return@composed this
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.96f else 1f,
         animationSpec = Motion.Springs.seamless(),
-        label = "aurora-breathing"
+        label = "breathing"
     )
     this
         .graphicsLayer {
