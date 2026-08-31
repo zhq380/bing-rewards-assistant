@@ -1,4 +1,4 @@
-package com.ripple.script.service
+﻿package com.ripple.script.service
 
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
  * 后台常驻服务：只负责「无障碍保活 + 常驻通知」，不再执行任何脚本。
  * - 注册 ACTION_TIME_TICK 分钟级心跳，进程存活期间每 60 秒检测一次无障碍「假活」/关闭
  * - 启动无障碍守护协程（自适应轮询），并在被系统清理时尽力恢复
- * - 通过 IDLE 常驻通知让系统（含 ColorOS）将其视为用户可见的活跃任务
+ * - 通过 IDLE 常驻通知让系统将其视为用户可见的活跃任务
  */
 class FloatingControllerService : Service() {
 
@@ -69,7 +69,7 @@ class FloatingControllerService : Service() {
      *
      * 轮询策略：
      * - 空闲常驻态：静默巡检 3 分钟一次（与分钟级心跳同频；读 Settings.Secure 是轻量 IPC）
-     * - 检测到一次被杀后：进入 2 分钟快速窗口，每 10 秒检测（ColorOS 常连环杀）
+     * - 检测到一次被杀后：进入 2 分钟快速窗口，每 10 秒检测（定制 ROM 常连环杀）
      *
      * 前提：adb 一次性授予 WRITE_SECURE_SETTINGS 后即可自动恢复，无需 root：
      *   adb shell pm grant com.ripple.script android.permission.WRITE_SECURE_SETTINGS
@@ -147,7 +147,7 @@ class FloatingControllerService : Service() {
         nm.notify(1001, notification)
     }
 
-    /** 升级为前台服务：常驻通知让系统（含 ColorOS 后台清理）视为用户可见的活跃任务 */
+    /** 升级为前台服务：常驻通知让系统（含 定制 ROM 后台清理）视为用户可见的活跃任务 */
     private fun startAsForeground(mode: String) {
         val channelId = "ripple_controller"
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
